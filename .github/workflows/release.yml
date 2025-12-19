@@ -26,7 +26,12 @@ jobs:
         run: |
           vcpkg install boost-test --triplet x64-windows
           vcpkg integrate install
-      - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
+      - name: Configure CMake (Windows)
+        if: runner.os == 'Windows'
+        run: cmake . -DPATCH_VERSION=${{ github.run_number }} -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+      - name: Configure CMake (Linux)
+        if: runner.os == 'Linux'
+        run: cmake . -DPATCH_VERSION=${{ github.run_number }}
       - run: cmake --build .
       - run: cmake --build . --target test
       - run: cmake --build . --target package
